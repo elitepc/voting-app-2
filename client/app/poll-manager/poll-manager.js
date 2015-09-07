@@ -5,6 +5,7 @@ angular.module('votingAppApp')
     $routeProvider
       .when('/poll-manager', {
         templateUrl: 'app/poll-manager/poll-manager.html',
-        controller: 'PollManagerCtrl'
+        controller: 'PollManagerCtrl',
+        authenticate: true // restrict to authenticated users
       });
   });
