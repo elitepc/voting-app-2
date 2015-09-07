@@ -45,6 +45,22 @@ exports.create = function(req, res) {
   var newPoll = req.body;
   newPoll.user_id = userId;
 
+  //sets poll url
+  if(newPoll.name){
+    newPoll.url = newPoll.name.replace(/\W+/g, '').toLowerCase();
+  }
+  //sets new answers Array
+  if(req.body.answers){
+    var answers = req.body.answers.slice();
+
+    var answersObj = {};
+    for(var i = 0; i < answers.length; i++){
+      answersObj[answers[i]] = 0;
+    }
+
+    req.body.answers = [answersObj];
+  }
+
   Poll.create(newPoll, function(err, poll) {
     if(err) { return handleError(res, err); }
     return res.status(201).json(poll);

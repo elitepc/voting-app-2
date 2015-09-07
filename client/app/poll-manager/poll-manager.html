@@ -8,23 +8,34 @@
       <h1 class="page-header">Your Polls:</h1>
       <ul class="nav nav-tabs nav-stacked col-md-4 col-sm-6" ng-repeat="poll in myPolls">
         <li>
-          <a href="/poll/{{ getCurrentUser().name }}/{{poll.name}}">{{poll.name}}
-            <button type="button" class="close" ng-click="deleteThing(thing)">&times;
-            </button>
-          </a>
+          <a href="/poll/{{ getCurrentUser().name }}/{{poll.url}}">{{poll.name}} - {{poll.answers}}</a>
+          <button type="button" class="close" ng-click="deletePoll(poll._id)">&times;
+          </button>
         </li>
       </ul>
     </div>
   </div>
   <div class="row">
-    <form class="new-poll-form">
+    <form class="new-poll-form" novalidate name="myForm">
       <label>Add new Poll</label>
-      <p class="input-group">
-        <input type="text" class="form-control" placeholder="Do you like chocolate?" ng-model="newPollName">
-        <span class="input-group-btn">
-          <button type="submit" class="btn btn-primary" ng-click="addPoll()">Add New</button>
-        </span>
-      </p>
+      <div ng-show="mainErrorMessage">{{ mainErrorMessage }}</div>
+      <div class="form-group">
+        <input required type="text" class="form-control" placeholder="Do you like chocolate?" ng-model="newPollName">
+      </div>
+      <div ng-show="notUniqueAnswers">All answers must be unique</div>
+      <div ng-repeat="newPollAnswer in newPollAnswers">
+        <div class="form-group">
+          <input required type="text" class="form-control" placeholder="Yes" ng-model="newPollAnswer.value">
+          <button ng-show="($last && newPollAnswers.length > 2)" type="button" class="close" ng-click="removePollAnswer()">&times;
+          </button>
+        </div>
+      </div>
+      <span class="input-group-btn">
+        <button type="submit" class="btn" ng-click="addPollAnswer()">Add New Answer</button>
+      </span>
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary" ng-click="addPoll()" ng-disabled="notUniqueAnswers || myForm.$invalid">Add New</button>
+      </span>
     </form>
   </div>
 </div>
