@@ -49,6 +49,13 @@ exports.create = function(req, res) {
   if(newPoll.name){
     newPoll.url = newPoll.name.replace(/\W+/g, '').toLowerCase();
   }
+  //checks if answers are unique
+  var sorted_arr = req.body.answers.slice().sort();
+  for (var i = 0; i < sorted_arr.length - 1; i++) {
+    if (sorted_arr[i + 1] == sorted_arr[i]) {
+      return res.status(500).send('Answers are not unique');
+    }
+  }
   //sets new answers Array
   if(req.body.answers){
     var answers = req.body.answers.slice();

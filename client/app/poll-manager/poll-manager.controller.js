@@ -32,8 +32,7 @@ angular.module('votingAppApp')
     };
 
     $scope.$watch('newPollAnswers', function() {
-      //console.log($scope.newPollAnswers);
-
+      //check if all answers are unique
       var sorted_arr = transformPollAnswersArr().slice().sort();
       for (var i = 0; i < sorted_arr.length - 1; i++) {
           if (sorted_arr[i + 1] == sorted_arr[i]) {
@@ -47,21 +46,7 @@ angular.module('votingAppApp')
       return false;
 
     }, true);
-    /*
-    $scope.checkUniqueAnswers = function(newPollAnswers){
-      console.log("checking");
-      console.log($scope.newPollAnswers);
-      var sorted_arr = newPollAnswers.slice().sort();
-      for (var i = 0; i < sorted_arr.length - 1; i++) {
-          console.log(sorted_arr[i + 1], sorted_arr[i]);
-          if (sorted_arr[i + 1] == sorted_arr[i]) {
-              console.log(sorted_arr[i + 1] == sorted_arr[i]);
-              $scope.buttonDisabled = true;
-          }
-      }
-      $scope.buttonDisabled = false;
-    };
-    */
+
     $scope.addPoll = function() {
       if($scope.newPollName === '') {
         return;
