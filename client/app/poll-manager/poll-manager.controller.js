@@ -104,20 +104,6 @@ angular.module('votingAppApp')
         }
       },
       function(err){
-        console.log(err);
-        var errMessage = err.data.errmsg;
-        console.log(errMessage);
-        var errorPattUniqueName = new RegExp("polls\\.\\$name_1  dup key", 'g');
-        var errorPattUniqueUrl = new RegExp("polls\\.\\$url_1  dup key", 'g');
-        //test unique name
-        if(errorPattUniqueName.test(errMessage)) {
-          $scope.mainErrorMessage = 'There is already a poll with that name';
-        }
-        //test unique url
-        if(errorPattUniqueUrl.test(errMessage)) {
-          $scope.mainErrorMessage = 'The name of your poll is too similar to another one of your polls';
-        }
-
 
         return false;
       });
