@@ -6,11 +6,11 @@ var auth = require('../../auth/auth.service');
 
 var router = express.Router();
 
-router.get('/', controller.index);
+router.get('/', controller.index); //todo
 router.get('/mypolls', auth.isAuthenticated(), controller.showMyPolls);
-router.get('/:id', controller.show);
+router.get('/:id', controller.show); //todo
 router.post('/', auth.isAuthenticated(), controller.create);
-router.put('/:id', controller.update);
-router.delete('/:id', controller.destroy);
+router.put('/:id', controller.update); //todo
+router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 
 module.exports = router;

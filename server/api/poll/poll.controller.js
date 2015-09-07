@@ -93,6 +93,10 @@ exports.destroy = function(req, res) {
   Poll.findById(req.params.id, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
+    var userId = req.user._id;
+    if(userId != poll.user_id){
+      return res.status(500).send('You do not have permission to execute that command');
+    }
     poll.remove(function(err) {
       if(err) { return handleError(res, err); }
       return res.status(204).send('No Content');
