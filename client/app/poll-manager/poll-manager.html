@@ -1,3 +1,33 @@
-<div class="col-md-12">
-This is the poll-manager view.
+<div ng-include="'components/navbar/navbar.html'"></div>
+
+<page-header></page-header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <h1 class="page-header">Your Polls:</h1>
+      <ul class="nav nav-tabs nav-stacked col-md-4 col-sm-6" ng-repeat="poll in myPolls">
+        <li>
+          <a href="/poll/{{ getCurrentUser().name }}/{{poll.name}}">{{poll.name}}
+            <button type="button" class="close" ng-click="deleteThing(thing)">&times;
+            </button>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <form class="new-poll-form">
+      <label>Add new Poll</label>
+      <p class="input-group">
+        <input type="text" class="form-control" placeholder="Do you like chocolate?" ng-model="newPollName">
+        <span class="input-group-btn">
+          <button type="submit" class="btn btn-primary" ng-click="addPoll()">Add New</button>
+        </span>
+      </p>
+    </form>
+  </div>
 </div>
+
+
+<page-footer></page-footer>
