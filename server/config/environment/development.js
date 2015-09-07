@@ -8,5 +8,5 @@ module.exports = {
     uri: 'mongodb://localhost/votingapp-dev'
   },
 
-  seedDB: true
+  seedDB: false
 };
