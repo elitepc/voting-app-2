@@ -8,6 +8,7 @@ var PollSchema = new Schema({
   url: { type : String, unique : true, required : true, lowercase: true },
   answers: { type : Array, required : true },
   user_id: { type : String, required : true },
+  user_name: { type : String, required : true },
   info: String,
   active: Boolean
 });
@@ -39,6 +40,12 @@ PollSchema
     return user_id.length;
   }, 'User id cannot be blank');
 
+// Validate empty user_name
+PollSchema
+  .path('user_name')
+  .validate(function(user_id) {
+    return user_id.length;
+  }, 'User name cannot be blank');
 
 
 module.exports = mongoose.model('Poll', PollSchema);

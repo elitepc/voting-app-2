@@ -13,7 +13,8 @@ exports.index = function(req, res) {
 
 // Get a single poll
 exports.show = function(req, res) {
-  Poll.findById(req.params.id, function (err, poll) {
+  var findObj = {user_name: req.params.user, name: req.params.pollName};
+  Poll.find(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
     return res.json(poll);
@@ -31,19 +32,15 @@ exports.showMyPolls = function(req, res) {
     if(!polls) { return res.status(200).send('Not Found'); }
     return res.json(polls);
   });
-  /*Poll.findById(req.params.id, function (err, poll) {
-    if(err) { return handleError(res, err); }
-    if(!poll) { return res.status(404).send('Not Found'); }
-    return res.json(poll);
-  });
-  */
 };
 
 // Creates a new poll in the DB.
 exports.create = function(req, res) {
   var userId = req.user._id;
+  var userName = req.user.name;
   var newPoll = req.body;
   newPoll.user_id = userId;
+  newPoll.user_name = userName;
 
   //sets poll url
   if(newPoll.name){
