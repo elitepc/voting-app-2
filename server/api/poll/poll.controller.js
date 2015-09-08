@@ -13,8 +13,8 @@ exports.index = function(req, res) {
 
 // Get a single poll
 exports.show = function(req, res) {
-  var findObj = {user_name: req.params.user, name: req.params.pollName};
-  Poll.find(findObj, function (err, poll) {
+  var findObj = {user_name: req.params.user, url: req.params.pollUrl};
+  Poll.findOne(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
     return res.json(poll);
@@ -38,14 +38,7 @@ exports.showMyPolls = function(req, res) {
 exports.create = function(req, res) {
   var userId = req.user._id;
   var userName = req.user.name;
-  var newPoll = req.body;
-  newPoll.user_id = userId;
-  newPoll.user_name = userName;
 
-  //sets poll url
-  if(newPoll.name){
-    newPoll.url = newPoll.name.replace(/\W+/g, '').toLowerCase();
-  }
   //checks if answers are unique
   var sorted_arr = req.body.answers.slice().sort();
   for (var i = 0; i < sorted_arr.length - 1; i++) {
@@ -62,7 +55,16 @@ exports.create = function(req, res) {
       answersObj[answers[i]] = 0;
     }
 
-    req.body.answers = [answersObj];
+    req.body.answers = answersObj;
+  }
+
+  var newPoll = req.body;
+  newPoll.user_id = userId;
+  newPoll.user_name = userName;
+
+  //sets poll url
+  if(newPoll.name){
+    newPoll.url = newPoll.name.replace(/\W+/g, '').toLowerCase();
   }
 
   Poll.create(newPoll, function(err, poll) {
@@ -77,12 +79,47 @@ exports.update = function(req, res) {
   Poll.findById(req.params.id, function (err, poll) {
     if (err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
-    var updated = _.merge(poll, req.body);
+    var updated = _.extend(poll, req.body);
     updated.save(function (err) {
       if (err) { return handleError(res, err); }
       return res.status(200).json(poll);
     });
   });
+};
+
+// Updates an existing poll in the DB with new vote.
+exports.voteAnswer = function(req, res) {
+  //TODO check if user already voted, check if vote is valid
+
+  var findObj = {user_name: req.params.user, url: req.params.pollUrl};
+  var answer = req.params.answer;
+
+
+  Poll.find(findObj, function (err, poll) {
+    if(err) { return handleError(res, err); }
+    if(!poll) { return res.status(404).send('Not Found'); }
+/*
+    var answers = { answers: []};
+    answers.answers[0] = poll.answers[0];
+    //add one to existing result
+    answers.answers[0][answer] = Number(answers.answers[0][answer]) + 1;
+    var updated = _.extend(poll, answers);
+*/
+console.log(JSON.stringify(poll, null, 2));
+    poll[0].answers[answer]++;
+
+    poll[0].save(function (err) {
+      if (err) { return handleError(res, err); }
+      //just for debugging
+      Poll.findById(poll[0]._id, function(err, shouldBeEqualTopollButWTFisGoingOn){
+        console.log(poll[0]);
+        console.log(shouldBeEqualTopollButWTFisGoingOn);
+      });
+      return res.status(200).json(poll[0]);
+    });
+  });
+
+
 };
 
 // Deletes a poll from the DB.

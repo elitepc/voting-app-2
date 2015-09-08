@@ -7,9 +7,15 @@
     <div class="col-sm-12">
       <div><input type="text" class="form-control" disabled ng-model="url"></div>
       <h1 class="page-header">{{ myPoll.name }}</h1>
-      <div ng-repeat="(answer, votes) in myPoll.answers[0]">
+      <div ng-repeat="(answer, votes) in myPoll.answers">
         <span>{{ answer }} - {{ votes }}</span>
+        <button type="button" ng-click="voteFor(answer)">wqdqwdqwd</button>
+
       </div>
+
+      <canvas id="doughnut" class="chart chart-doughnut"
+        chart-data="pollData" chart-labels="pollLabels">
+      </canvas>
     </div>
   </div>
 </div>

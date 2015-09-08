@@ -6,7 +6,8 @@ angular.module('votingAppApp', [
   'ngSanitize',
   'ngRoute',
   'btford.socket-io',
-  'ui.bootstrap'
+  'ui.bootstrap',
+  'chart.js'
 ])
   .config(function ($routeProvider, $locationProvider, $httpProvider) {
     $routeProvider

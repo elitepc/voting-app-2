@@ -6,7 +6,7 @@ var mongoose = require('mongoose'),
 var PollSchema = new Schema({
   name: { type : String, unique : true, required : true },
   url: { type : String, unique : true, required : true, lowercase: true },
-  answers: { type : Array, required : true },
+  answers: { type : Object, required : true },
   user_id: { type : String, required : true },
   user_name: { type : String, required : true },
   info: String,
