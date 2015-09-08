@@ -15,7 +15,9 @@ angular.module('votingAppApp')
 
     $http.get('/api/polls/' + pollUser + '/' + pollUrl).success(function(awesomeThings) {
       $scope.myPoll = awesomeThings;
-      //socket.syncUpdates('thispoll', $scope.myPoll);
+      $scope.test = [];
+      socket.syncUpdates('poll[0]', $scope.test);
+
 
       console.log($scope.myPoll.answers);
       for(var index in $scope.myPoll.answers){

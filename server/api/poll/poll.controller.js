@@ -106,8 +106,9 @@ exports.voteAnswer = function(req, res) {
     var updated = _.extend(poll, answers);
 */
 console.log(JSON.stringify(poll, null, 2));
-    poll[0].answers[answer]++;
 
+    poll[0].answers[answer]++;
+    poll[0].markModified('answers.' + [answer]);
     poll[0].save(function (err) {
       if (err) { return handleError(res, err); }
       //just for debugging
