@@ -6,8 +6,8 @@
   <div class="row">
     <div class="col-sm-12">
       <div><input type="text" class="form-control" disabled ng-model="url"></div>
-      <h1 class="page-header">{{ myPoll.name }}</h1>
-      <div ng-repeat="(answer, votes) in myPoll.answers">
+      <h1 class="page-header">{{ myPoll[0].name }}</h1>
+      <div ng-repeat="(answer, votes) in myPoll[0].answers">
         <span>{{ answer }} - {{ votes }}</span>
         <button type="button" ng-click="voteFor(answer)">wqdqwdqwd</button>
         {{ test }}
