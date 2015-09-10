@@ -16,7 +16,7 @@ angular.module('votingAppApp')
         })
         .then( function() {
           // Account created, redirect to home
-          $location.path('/');
+          $location.path('/poll-manager');
         })
         .catch( function(err) {
           err = err.data;
@@ -24,8 +24,16 @@ angular.module('votingAppApp')
 
           // Update validity of form fields that match the mongoose errors
           angular.forEach(err.errors, function(error, field) {
-            form[field].$setValidity('mongoose', false);
-            $scope.errors[field] = error.message;
+            if(field === 'name_url'){
+              form['name'].$setValidity('mongoose', false);
+              $scope.errors['name'] = error.message;
+            }
+            else{
+              form[field].$setValidity('mongoose', false);
+              $scope.errors[field] = error.message;
+            }
+
+
           });
         });
       }

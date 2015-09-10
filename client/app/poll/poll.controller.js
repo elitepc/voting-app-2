@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('votingAppApp')
-  .controller('PollCtrl', function ($scope, $http, Auth, socket, $routeParams, $location) {
+  .controller('PollCtrl', function ($scope, $http, Auth, socket, $routeParams, $location, $window) {
     $scope.getCurrentUser = Auth.getCurrentUser;
     $scope.isLoggedIn = Auth.isLoggedIn;
     $scope.myPoll = [{}];
@@ -23,8 +23,8 @@ angular.module('votingAppApp')
         }
       }
     }, true);
-    $http.get('/api/polls/' + pollUser + '/' + pollUrl).success(function(awesomeThings) {
-      $scope.myPoll[0] = awesomeThings;
+    $http.get('/api/polls/' + pollUser + '/' + pollUrl).then(function(response) {
+      $scope.myPoll[0] = response.data;
       socket.syncUpdates('poll', $scope.myPoll);
 
       for(var index in $scope.myPoll[0].answers){
@@ -37,10 +37,12 @@ angular.module('votingAppApp')
 
 
       console.log($scope.myPoll[0]);
+    }, function(response) {
+      $window.location.href = '/';
     });
 
     $scope.voteFor = function(answer){
-      $http.put('/api/polls/' + $scope.myPoll[0].user_name + '/' + $scope.myPoll[0].url + '/' + answer)
+      $http.put('/api/polls/' + $scope.myPoll[0].user_name_url + '/' + $scope.myPoll[0].url + '/' + answer)
       .then(function(response){
         console.log(response.data);
         //TODO

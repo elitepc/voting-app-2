@@ -37,12 +37,14 @@ User.find({}).remove(function() {
   User.create({
     provider: 'local',
     name: 'Test User',
+    name_url: 'testuser',
     email: 'test@test.com',
     password: 'test'
   }, {
     provider: 'local',
     role: 'admin',
     name: 'Admin',
+    name_url: 'admin',
     email: 'admin@admin.com',
     password: 'admin'
   }, function() {
@@ -55,7 +57,7 @@ User.find({}).remove(function() {
             url : 'examplepoll',
             answers : {Yes: 10, No: 0},
             user_id: user._id,
-            user_name: 'Admin'
+            user_name_url: 'admin'
           });
         });
 

@@ -5,10 +5,10 @@ var mongoose = require('mongoose'),
 
 var PollSchema = new Schema({
   name: { type : String, unique : true, required : true },
-  url: { type : String, unique : true, required : true, lowercase: true },
+  url: { type : String, required : true, lowercase: true },
   answers: { type : Object, required : true },
   user_id: { type : String, required : true },
-  user_name: { type : String, required : true },
+  user_name_url: { type : String, required : true, lowercase: true, trim: true },
   info: String,
   active: Boolean
 });
@@ -42,7 +42,7 @@ PollSchema
 
 // Validate empty user_name
 PollSchema
-  .path('user_name')
+  .path('user_name_url')
   .validate(function(user_id) {
     return user_id.length;
   }, 'User name cannot be blank');

@@ -63,6 +63,8 @@ angular.module('votingAppApp')
         console.log(err);
         var errMessage = err.data.errmsg;
         console.log(errMessage);
+
+        //TODO check with the validator instead of unique in mongoose
         var errorPattUniqueName = new RegExp("polls\\.\\$name_1  dup key", 'g');
         var errorPattUniqueUrl = new RegExp("polls\\.\\$url_1  dup key", 'g');
         //test unique name

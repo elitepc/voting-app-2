@@ -2,6 +2,7 @@
 
 var _ = require('lodash');
 var Poll = require('./poll.model');
+var User = require('../user/user.model');
 
 // Get list of polls
 exports.index = function(req, res) {
@@ -13,12 +14,15 @@ exports.index = function(req, res) {
 
 // Get a single poll
 exports.show = function(req, res) {
-  var findObj = {user_name: req.params.user, url: req.params.pollUrl};
+
+  var findObj = {user_name_url: req.params.user, url: req.params.pollUrl};
   Poll.findOne(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
     return res.json(poll);
   });
+
+
 };
 
 // Get all my polls
@@ -37,7 +41,7 @@ exports.showMyPolls = function(req, res) {
 // Creates a new poll in the DB.
 exports.create = function(req, res) {
   var userId = req.user._id;
-  var userName = req.user.name;
+  var userNameUrl = req.user.name_url;
 
   //checks if answers are unique
   var sorted_arr = req.body.answers.slice().sort();
@@ -60,12 +64,14 @@ exports.create = function(req, res) {
 
   var newPoll = req.body;
   newPoll.user_id = userId;
-  newPoll.user_name = userName;
+
 
   //sets poll url
   if(newPoll.name){
     newPoll.url = newPoll.name.replace(/\W+/g, '').toLowerCase();
   }
+  //sets user name url
+  newPoll.user_name_url = userNameUrl;
 
   Poll.create(newPoll, function(err, poll) {
     if(err) { return handleError(res, err); }
@@ -91,32 +97,19 @@ exports.update = function(req, res) {
 exports.voteAnswer = function(req, res) {
   //TODO check if user already voted, check if vote is valid
 
-  var findObj = {user_name: req.params.user, url: req.params.pollUrl};
+  var findObj = {user_name_url: req.params.user, url: req.params.pollUrl};
   var answer = req.params.answer;
 
-
-  Poll.find(findObj, function (err, poll) {
+  Poll.findOne(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
-/*
-    var answers = { answers: []};
-    answers.answers[0] = poll.answers[0];
-    //add one to existing result
-    answers.answers[0][answer] = Number(answers.answers[0][answer]) + 1;
-    var updated = _.extend(poll, answers);
-*/
-console.log(JSON.stringify(poll, null, 2));
 
-    poll[0].answers[answer]++;
-    poll[0].markModified('answers.' + [answer]);
-    poll[0].save(function (err) {
+    poll.answers[answer]++;
+    poll.markModified('answers.' + [answer]);
+    poll.save(function (err) {
       if (err) { return handleError(res, err); }
-      //just for debugging
-      Poll.findById(poll[0]._id, function(err, shouldBeEqualTopollButWTFisGoingOn){
-        console.log(poll[0]);
-        console.log(shouldBeEqualTopollButWTFisGoingOn);
-      });
-      return res.status(200).json(poll[0]);
+
+      return res.status(200).json(poll);
     });
   });
 

@@ -8,7 +8,7 @@
       <h1 class="page-header">Your Polls:</h1>
       <ul class="nav nav-tabs nav-stacked col-md-4 col-sm-6" ng-repeat="poll in myPolls">
         <li>
-          <a href="/poll/{{poll.user_name}}/{{poll.url}}">{{poll.name}} - {{poll.answers}}</a>
+          <a href="/poll/{{poll.user_name_url}}/{{poll.url}}">{{poll.name}} - {{poll.answers}}</a>
           <button type="button" class="close" ng-click="deletePoll(poll._id)">&times;
           </button>
         </li>
