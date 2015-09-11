@@ -37,7 +37,13 @@ exports.showMyPolls = function(req, res) {
     return res.json(polls);
   });
 };
+// Get client IP address
+exports.getIp = function(req, res){
+  var voter_ip = req.connection.remoteAddress;
 
+  res.status(200).json({ip: voter_ip});
+
+}
 // Creates a new poll in the DB.
 exports.create = function(req, res) {
   var userId = req.user._id;
@@ -78,7 +84,6 @@ exports.create = function(req, res) {
     return res.status(201).json(poll);
   });
 };
-
 // Updates an existing poll in the DB.
 exports.update = function(req, res) {
   if(req.body._id) { delete req.body._id; }
@@ -99,13 +104,21 @@ exports.voteAnswer = function(req, res) {
 
   var findObj = {user_name_url: req.params.user, url: req.params.pollUrl};
   var answer = req.params.answer;
+  var voter_ip = req.connection.remoteAddress;
 
   Poll.findOne(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
-
+    if(poll.voters_ip.indexOf(voter_ip) >= 0){ return res.status(500).send('Voter already voted'); }
+    if(!(answer in poll.answers)){
+      return res.status(500).send('Answer is not valid');
+    }
+    //adds one to the voted answered
     poll.answers[answer]++;
     poll.markModified('answers.' + [answer]);
+    //inserts voters ip
+    poll.voters_ip.push(voter_ip);
+
     poll.save(function (err) {
       if (err) { return handleError(res, err); }
 

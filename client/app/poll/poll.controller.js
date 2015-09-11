@@ -8,6 +8,7 @@ angular.module('votingAppApp')
     $scope.url = $location.absUrl();
     $scope.pollLabels = [];
     $scope.pollData = [];
+    $scope.myIp = "";
 
     var pollUser = $routeParams.user;
     var pollUrl = $routeParams.pollName;
@@ -23,6 +24,9 @@ angular.module('votingAppApp')
         }
       }
     }, true);
+    $http.get('/api/polls/getip').then(function(response) {
+      $scope.myIp = response.data.ip;
+    });
     $http.get('/api/polls/' + pollUser + '/' + pollUrl).then(function(response) {
       $scope.myPoll[0] = response.data;
       socket.syncUpdates('poll', $scope.myPoll);

@@ -7,15 +7,19 @@
     <div class="col-sm-12">
       <div><input type="text" class="form-control" disabled ng-model="url"></div>
       <h1 class="page-header">{{ myPoll[0].name }}</h1>
-      <div ng-repeat="(answer, votes) in myPoll[0].answers">
-        <span>{{ answer }} - {{ votes }}</span>
-        <button type="button" ng-click="voteFor(answer)">wqdqwdqwd</button>
-        {{ test }}
+      <div ng-hide="myPoll[0].voters_ip.indexOf(myIp) >= 0">
+        <div ng-repeat="(answer, votes) in myPoll[0].answers">
+          <span>{{ answer }} - {{ votes }}</span>
+          <button type="button" ng-click="voteFor(answer)">wqdqwdqwd</button>
+          {{ test }}
+        </div>
       </div>
 
-      <canvas id="doughnut" class="chart chart-doughnut"
-        chart-data="pollData" chart-labels="pollLabels" chart-legend="true">
-      </canvas>
+      <div ng-show="myPoll[0].voters_ip.indexOf(myIp) >= 0">
+        <canvas id="doughnut" class="chart chart-doughnut"
+          chart-data="pollData" chart-labels="pollLabels" chart-legend="true">
+        </canvas>
+      </div>
     </div>
   </div>
 </div>

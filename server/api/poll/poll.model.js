@@ -12,6 +12,7 @@ var PollSchema = new Schema({
   answers: { type : Object, required : true },
   user_id: { type : String, required : true },
   user_name_url: { type : String, required : true, lowercase: true, trim: true },
+  voters_ip: Array,
   info: String,
   active: Boolean
 });
