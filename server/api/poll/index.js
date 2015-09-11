@@ -12,6 +12,7 @@ router.get('/:user/:pollUrl', controller.show);
 router.get('/getip', controller.getIp);
 
 router.post('/', auth.isAuthenticated(), controller.create);
+router.post('/newAnswer', auth.isAuthenticated(), controller.newAnswer);
 
 router.put('/:user/:pollUrl/:answer', controller.voteAnswer);
 

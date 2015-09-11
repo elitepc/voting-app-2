@@ -52,4 +52,29 @@ angular.module('votingAppApp')
         //TODO
       });
     };
+
+    $scope.addAnswerToPoll = function() {
+      if($scope.newAnswer === '') {
+        return;
+      }
+      console.log($scope.myPoll[0]._id);
+      console.log($scope.newAnswer);
+      $http.post('/api/polls/newAnswer', { id: $scope.myPoll[0]._id, newAnswer: $scope.newAnswer })
+      .then(function(response){
+        $scope.myPoll[0] = response.data;
+        $scope.mainErrorMessage = "";
+        $scope.myForm.$setPristine();
+      },
+      function(err){
+        var form = $scope.myForm;
+        err = err.data;
+        $scope.mainErrorMessage = err;
+
+
+
+        return false;
+      });
+    };
+
+
   });

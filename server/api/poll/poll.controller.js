@@ -84,18 +84,35 @@ exports.create = function(req, res) {
     return res.status(201).json(poll);
   });
 };
-// Updates an existing poll in the DB.
-exports.update = function(req, res) {
-  if(req.body._id) { delete req.body._id; }
-  Poll.findById(req.params.id, function (err, poll) {
-    if (err) { return handleError(res, err); }
+
+// Updates an existing poll in the DB with new vote.
+exports.newAnswer = function(req, res) {
+  //TODO check if user already voted, check if vote is valid
+
+  var answer = req.body.newAnswer;
+  var voter_ip = req.connection.remoteAddress;
+
+  Poll.findById(req.body.id, function (err, poll) {
+    if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
-    var updated = _.extend(poll, req.body);
-    updated.save(function (err) {
+    if(poll.voters_ip.indexOf(voter_ip) >= 0){ return res.status(500).send('Voter already voted'); }
+    if(answer in poll.answers){
+      return res.status(500).send("Poll already has this answer");
+    }
+    //adds one to the voted answered
+    poll.answers[answer] = 1;
+    poll.markModified('answers');
+    //inserts voters ip
+    poll.voters_ip.push(voter_ip);
+
+    poll.save(function (err) {
       if (err) { return handleError(res, err); }
+
       return res.status(200).json(poll);
     });
   });
+
+
 };
 
 // Updates an existing poll in the DB with new vote.

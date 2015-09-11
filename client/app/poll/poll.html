@@ -13,6 +13,16 @@
           <button type="button" ng-click="voteFor(answer)">wqdqwdqwd</button>
           {{ test }}
         </div>
+        <form class="new-poll-form" novalidate name="myForm">
+          <label>Add new answer to this poll</label>
+          <div ng-show="mainErrorMessage">{{ mainErrorMessage }}</div>
+          <div class="form-group">
+            <input required type="text" class="form-control" placeholder="New Answer" ng-model="newAnswer">
+          </div>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary" ng-click="addAnswerToPoll()">Add New</button>
+          </span>
+        </form>
       </div>
 
       <div ng-show="myPoll[0].voters_ip.indexOf(myIp) >= 0">
