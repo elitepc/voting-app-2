@@ -19,13 +19,13 @@
     <form class="new-poll-form" novalidate name="myForm">
       <label>Add new Poll</label>
       <div ng-show="mainErrorMessage">{{ mainErrorMessage }}</div>
-      <div class="form-group">
+      <div class="form-group" ng-class="{ 'has-error': mainErrorMessage && submitted }">
         <input required type="text" class="form-control" placeholder="Do you like chocolate?" ng-model="newPollName">
       </div>
       <div ng-show="notUniqueAnswers">All answers must be unique</div>
       <div ng-repeat="newPollAnswer in newPollAnswers">
         <div class="form-group">
-          <input required type="text" class="form-control" placeholder="Yes" ng-model="newPollAnswer.value">
+          <input required name="name" type="text" class="form-control" placeholder="Yes" ng-model="newPollAnswer.value">
           <button ng-show="($last && newPollAnswers.length > 2)" type="button" class="close" ng-click="removePollAnswer()">&times;
           </button>
         </div>

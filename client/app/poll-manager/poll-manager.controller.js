@@ -7,6 +7,7 @@ angular.module('votingAppApp')
     $scope.mainErrorMessage = "";
     $scope.notUniqueAnswers = false;
 
+
     $http.get('/api/polls/mypolls').success(function(awesomeThings) {
       $scope.myPolls = awesomeThings;
       socket.syncUpdates('poll', $scope.myPolls);
@@ -51,6 +52,8 @@ angular.module('votingAppApp')
       if($scope.newPollName === '') {
         return;
       }
+      $scope.submitted = true;
+
       $http.post('/api/polls', { name: $scope.newPollName, answers: transformPollAnswersArr() })
       .then(function(response){
         $scope.newPollName = "";
@@ -60,20 +63,14 @@ angular.module('votingAppApp')
         $scope.myForm.$setPristine();
       },
       function(err){
-        console.log(err);
-        var errMessage = err.data.errmsg;
-        console.log(errMessage);
-
-        //TODO check with the validator instead of unique in mongoose
-        var errorPattUniqueName = new RegExp("polls\\.\\$name_1  dup key", 'g');
-        var errorPattUniqueUrl = new RegExp("polls\\.\\$url_1  dup key", 'g');
-        //test unique name
-        if(errorPattUniqueName.test(errMessage)) {
-          $scope.mainErrorMessage = 'There is already a poll with that name';
+        var form = $scope.myForm;
+        err = err.data;
+        if(err.errors.name){
+          $scope.mainErrorMessage = err.errors.name.message;
         }
-        //test unique url
-        if(errorPattUniqueUrl.test(errMessage)) {
-          $scope.mainErrorMessage = 'The name of your poll is too similar to another one of your polls';
+        else if(err.errors.url && err.errors.url.kind === 'required'){
+          //in case name_url is empty
+          $scope.mainErrorMessage = "Poll's name must have at least 1 alphanumeric character";
         }
 
 
