@@ -6,12 +6,31 @@ angular.module('votingAppApp')
     $scope.newPollAnswers = [{value:'Yes'}, {value:'No'}];
     $scope.mainErrorMessage = "";
     $scope.notUniqueAnswers = false;
-
+    $scope.pollsDataChart = {};
+    $scope.myPolls = [];
 
     $http.get('/api/polls/mypolls').success(function(awesomeThings) {
       $scope.myPolls = awesomeThings;
       socket.syncUpdates('poll', $scope.myPolls);
     });
+
+    $scope.$watch('myPolls', function(){
+      $scope.pollsDataChart = {};
+      $scope.myPolls.forEach(function(el, index, array){
+        
+        $scope.pollsDataChart[index] = {pollLabels: [], pollData: []};
+        for(var i in el.answers){
+          if (el.answers.hasOwnProperty(i)) {
+
+            $scope.pollsDataChart[index].pollLabels.push(i);
+            $scope.pollsDataChart[index].pollData.push(el.answers[i]);
+
+          }
+        }
+        console.log($scope.pollsDataChart[index]);
+      });
+
+    }, true);
 
     var transformPollAnswersArr = function(){
       var arr = [];
