@@ -87,7 +87,7 @@ exports.create = function(req, res) {
 
 // Updates an existing poll in the DB with new vote.
 exports.newAnswer = function(req, res) {
-  
+
 
   var answer = req.body.newAnswer;
   var voter_ip = req.connection.remoteAddress;
@@ -117,7 +117,6 @@ exports.newAnswer = function(req, res) {
 
 // Updates an existing poll in the DB with new vote.
 exports.voteAnswer = function(req, res) {
-  //TODO check if user already voted, check if vote is valid
 
   var findObj = {user_name_url: req.params.user, url: req.params.pollUrl};
   var answer = req.params.answer;
