@@ -17,7 +17,7 @@ angular.module('votingAppApp')
     $scope.$watch('myPolls', function(){
       $scope.pollsDataChart = {};
       $scope.myPolls.forEach(function(el, index, array){
-        
+
         $scope.pollsDataChart[index] = {pollLabels: [], pollData: []};
         for(var i in el.answers){
           if (el.answers.hasOwnProperty(i)) {
@@ -27,7 +27,6 @@ angular.module('votingAppApp')
 
           }
         }
-        console.log($scope.pollsDataChart[index]);
       });
 
     }, true);

@@ -8,13 +8,15 @@ angular.module('votingAppApp')
     $scope.url = $location.absUrl();
     $scope.pollLabels = [];
     $scope.pollData = [];
-    $scope.myIp = "";
+    $scope.canVote = false;
+    $scope.voteSum = 0;
 
     var pollUser = $routeParams.user;
     var pollUrl = $routeParams.pollName;
-    console.log($routeParams);
-    //TODO do not repeat yourself
-    $scope.$watch('myPoll', function(){
+
+    var transformAnswerDataToChartData = function(){
+      //transforms vote data to 2 objects required by chart.js
+
       $scope.pollLabels = [];
       $scope.pollData = [];
       for(var index in $scope.myPoll[0].answers){
@@ -23,24 +25,34 @@ angular.module('votingAppApp')
           $scope.pollData.push($scope.myPoll[0].answers[index]);
         }
       }
+      //updates the vote sum
+      $scope.voteSum = 0;
+      for(var i = 0; i < $scope.pollData.length; i++){
+        $scope.voteSum += $scope.pollData[i];
+      }
+
+    }
+
+    $scope.$watch('myPoll', function(){
+      //watches poll because of socket use
+
+      //updates the chart
+      transformAnswerDataToChartData();
+
     }, true);
-    $http.get('/api/polls/getip').then(function(response) {
-      $scope.myIp = response.data.ip;
-    });
     $http.get('/api/polls/' + pollUser + '/' + pollUrl).then(function(response) {
-      $scope.myPoll[0] = response.data;
+      //checks if user can vote (if IP is not on the list)
+      $scope.canVote = response.data.canVote;
+
+
+      $scope.myPoll[0] = response.data.poll;
+
+      //sets the socket for updated poll in real time
       socket.syncUpdates('poll', $scope.myPoll);
 
-      for(var index in $scope.myPoll[0].answers){
-        if ($scope.myPoll[0].answers.hasOwnProperty(index)) {
-          $scope.pollLabels.push(index);
-          $scope.pollData.push($scope.myPoll[0].answers[index]);
-        }
-      }
-      console.log($scope.pollLabels, $scope.pollData);
+      //updates the chart
+      transformAnswerDataToChartData();
 
-
-      console.log($scope.myPoll[0]);
     }, function(response) {
       $window.location.href = '/';
     });
@@ -48,8 +60,14 @@ angular.module('votingAppApp')
     $scope.voteFor = function(answer){
       $http.put('/api/polls/' + $scope.myPoll[0].user_name_url + '/' + $scope.myPoll[0].url + '/' + answer)
       .then(function(response){
-        console.log(response.data);
-        //TODO
+        //already voted, then can't vote anymore
+        $scope.canVote = false;
+        //adds one the sum of votes
+        $scope.voteSum++;
+
+        //updated poll
+        $scope.myPoll[0] = response.data;
+        transformAnswerDataToChartData();
       });
     };
 
@@ -57,13 +75,15 @@ angular.module('votingAppApp')
       if($scope.newAnswer === '') {
         return;
       }
-      console.log($scope.myPoll[0]._id);
-      console.log($scope.newAnswer);
       $http.post('/api/polls/newAnswer', { id: $scope.myPoll[0]._id, newAnswer: $scope.newAnswer })
       .then(function(response){
         $scope.myPoll[0] = response.data;
         $scope.mainErrorMessage = "";
         $scope.myForm.$setPristine();
+        //already voted, then can't vote anymore
+        $scope.canVote = false;
+        //adds one the sum of votes
+        $scope.voteSum++;
       },
       function(err){
         var form = $scope.myForm;

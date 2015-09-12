@@ -14,12 +14,27 @@ exports.index = function(req, res) {
 
 // Get a single poll
 exports.show = function(req, res) {
-
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   var findObj = {user_name_url: req.params.user, url: req.params.pollUrl};
   Poll.findOne(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }
     if(!poll) { return res.status(404).send('Not Found'); }
-    return res.json(poll);
+
+    //checks if voter already voted (IP)
+    var canVote;
+    if(poll.voters_ip.indexOf(ip) >= 0){
+      canVote = false;
+    }
+    else{
+      canVote = true;
+    }
+
+    //deletes IP info before sending to the client
+    poll.voters_ip = "";
+    //deletes user_id before sending to the client
+    poll.user_id = "";
+
+    return res.json({poll: poll, canVote: canVote});
   });
 
 
@@ -34,6 +49,13 @@ exports.showMyPolls = function(req, res) {
   Poll.find(findObj, function (err, polls) {
     if(err) { return handleError(res, err); }
     if(!polls) { return res.status(200).send('Not Found'); }
+
+    //deletes voters ip and user id from the polls
+    polls.map(function(poll){
+      poll.voters_ip = "";
+      poll.user_id = "";
+    });
+
     return res.json(polls);
   });
 };

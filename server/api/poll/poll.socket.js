@@ -16,9 +16,13 @@ exports.register = function(socket) {
 }
 
 function onSave(socket, doc, cb) {
+  doc.voters_ip = "";
+  doc.user_id = "";
   socket.emit('poll:save', doc);
 }
 
 function onRemove(socket, doc, cb) {
+  doc.voters_ip = "";
+  doc.user_id = "";
   socket.emit('poll:remove', doc);
 }
