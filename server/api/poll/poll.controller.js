@@ -59,13 +59,7 @@ exports.showMyPolls = function(req, res) {
     return res.json(polls);
   });
 };
-// Get client IP address
-exports.getIp = function(req, res){
-  var voter_ip = req.connection.remoteAddress;
 
-  res.status(200).json({ip: voter_ip});
-
-}
 // Creates a new poll in the DB.
 exports.create = function(req, res) {
   var userId = req.user._id;
@@ -112,7 +106,7 @@ exports.newAnswer = function(req, res) {
 
 
   var answer = req.body.newAnswer;
-  var voter_ip = req.connection.remoteAddress;
+  var voter_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
   Poll.findById(req.body.id, function (err, poll) {
     if(err) { return handleError(res, err); }
@@ -142,7 +136,7 @@ exports.voteAnswer = function(req, res) {
 
   var findObj = {user_name_url: req.params.user, url: req.params.pollUrl};
   var answer = req.params.answer;
-  var voter_ip = req.connection.remoteAddress;
+  var voter_ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
   Poll.findOne(findObj, function (err, poll) {
     if(err) { return handleError(res, err); }

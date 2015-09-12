@@ -9,7 +9,6 @@ var router = express.Router();
 //router.get('/', controller.index); //todo
 router.get('/mypolls', auth.isAuthenticated(), controller.showMyPolls);
 router.get('/:user/:pollUrl', controller.show);
-router.get('/getip', controller.getIp);
 
 router.post('/', auth.isAuthenticated(), controller.create);
 router.post('/newAnswer', auth.isAuthenticated(), controller.newAnswer);
