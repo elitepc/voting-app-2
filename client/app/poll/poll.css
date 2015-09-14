@@ -1,0 +1,7 @@
+.total-votes{
+  text-align:center;
+  font-size: 20px;
+}
+.total-votes .individual-votes{
+  font-size: 16px;
+}
