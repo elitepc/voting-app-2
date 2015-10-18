@@ -9,8 +9,7 @@
       <h1 class="page-header">{{ myPoll[0].name }}</h1>
       <div ng-show="canVote">
         <div ng-repeat="(answer, votes) in myPoll[0].answers">
-          <span>{{ answer }} - {{ votes }}</span>
-          <button type="button" ng-click="voteFor(answer)">wqdqwdqwd</button>
+          <button type="button" ng-click="voteFor(answer)" class="vote-answer">{{ answer }}</button>
           {{ test }}
         </div>
         <form class="new-poll-form" novalidate name="myForm">
